@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>База знаний · Моушн-дизайн</title>
+<style>
+  :root {
+    --bg: #0f1115;
+    --surface: #1a1d24;
+    --surface-2: #242830;
+    --text: #e7e9ee;
+    --muted: #9aa0ad;
+    --accent: #4f8cff;
+    --accent-soft: rgba(79,140,255,0.12);
+    --border: #2c313b;
+    --warn: #f39c12;
+    --good: #2ecc71;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 16px; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+    font-size: 15px;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    max-width: 1180px;
+    margin: 0 auto;
+    gap: 40px;
+    padding: 0 24px;
+  }
+  .toc {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 32px 0;
+    border-right: 1px solid var(--border);
+    padding-right: 20px;
+  }
+  .toc h2 {
+    margin: 0 0 14px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--muted);
+  }
+  .toc ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    counter-reset: tocItem;
+  }
+  .toc li { margin-bottom: 4px; counter-increment: tocItem; }
+  .toc a {
+    display: flex;
+    gap: 10px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    color: var(--text);
+    font-size: 14px;
+    border-left: 2px solid transparent;
+  }
+  .toc a::before {
+    content: counter(tocItem, decimal-leading-zero);
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    font-size: 12px;
+    min-width: 18px;
+    padding-top: 2px;
+  }
+  .toc a:hover { background: var(--surface); text-decoration: none; }
+  .toc a.active { background: var(--accent-soft); border-left-color: var(--accent); }
+  .toc-back {
+    display: inline-block;
+    margin-bottom: 18px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  main { padding: 32px 0 80px; min-width: 0; }
+  header.top {
+    margin-bottom: 36px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--border);
+  }
+  h1 {
+    margin: 0 0 8px;
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+  }
+  .lead { color: var(--muted); font-size: 15px; max-width: 620px; }
+
+  section { margin-bottom: 56px; scroll-margin-top: 16px; }
+  section h2 {
+    margin: 0 0 6px;
+    font-size: 24px;
+    font-weight: 700;
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    letter-spacing: -0.2px;
+  }
+  section h2 .n {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    background: var(--surface);
+    padding: 4px 10px;
+    border-radius: 999px;
+    letter-spacing: 0.5px;
+  }
+  section h2 .anchor {
+    margin-left: auto;
+    font-size: 13px;
+    color: var(--muted);
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  section h2:hover .anchor { opacity: 1; }
+  section h3 {
+    font-size: 17px;
+    margin: 26px 0 10px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  section h4 {
+    font-size: 14px;
+    margin: 18px 0 6px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  p { margin: 0 0 12px; }
+
+  ul, ol { padding-left: 20px; margin: 8px 0 14px; }
+  li { margin-bottom: 4px; }
+
+  strong { color: #fff; }
+  em { color: var(--muted); font-style: italic; }
+  code {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.92em;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0 18px;
+    background: var(--surface);
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  th, td {
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+    vertical-align: top;
+  }
+  th {
+    background: var(--surface-2);
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin: 14px 0;
+  }
+  .card.accent {
+    background: var(--accent-soft);
+    border-left: 3px solid var(--accent);
+    border-radius: 4px;
+  }
+  .card.warn {
+    background: rgba(243,156,18,0.08);
+    border-left: 3px solid var(--warn);
+    border-radius: 4px;
+  }
+  .card .label {
+    display: inline-block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 12px;
+    margin: 14px 0;
+  }
+  .term {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+  }
+  .term-name {
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+    font-size: 14px;
+  }
+  .term-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+  .anchor-link::before { content: "#"; opacity: 0.5; }
+  .footer-back {
+    margin-top: 60px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; gap: 0; padding: 0 16px; }
+    .toc {
+      position: static;
+      height: auto;
+      border-right: none;
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+      margin-bottom: 12px;
+    }
+    .toc ol { columns: 2; column-gap: 14px; }
+    .toc a { padding: 4px 8px; }
+    main { padding: 16px 0 60px; }
+    h1 { font-size: 26px; }
+    section h2 { font-size: 20px; }
+    section h2 .anchor { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <aside class="toc">
+    <a href="index.html" class="toc-back">← к выбору варианта</a>
+    <h2>Содержание</h2>
+    <ol>
+      <li><a href="#s1">Композиция</a></li>
+      <li><a href="#s2">Композиция кадра</a></li>
+      <li><a href="#s3">Монтаж</a></li>
+      <li><a href="#s4">Цветовые модели</a></li>
+      <li><a href="#s5">Гамма-коррекция</a></li>
+      <li><a href="#s6">Контрастность</a></li>
+      <li><a href="#s7">Освещение</a></li>
+      <li><a href="#s8">VFX и CG</a></li>
+      <li><a href="#s9">After Effects</a></li>
+      <li><a href="#s10">12 принципов анимации</a></li>
+      <li><a href="#s11">GPU-рендер</a></li>
+      <li><a href="#s12">Bake (запечка)</a></li>
+      <li><a href="#s13">Основы рендера</a></li>
+      <li><a href="#s14">Растр и вектор</a></li>
+      <li><a href="#s15">Академический рисунок</a></li>
+      <li><a href="#s16">Этапы продакшна</a></li>
+      <li><a href="#sources">Источники</a></li>
+    </ol>
+  </aside>
+
+  <main>
+    <header class="top">
+      <h1>База знаний: Моушн-дизайн</h1>
+      <p class="lead">Сводка по литературе для подготовки к тесту. 16 тем — от композиции и монтажа до GPU-рендера и запечки карт.</p>
+    </header>
+
+    <!-- 1 -->
+    <section id="s1">
+      <h2><span class="n">01</span> Композиция (визуальная) <a href="#s1" class="anchor anchor-link"></a></h2>
+      <div class="card accent">
+        <span class="label">Определение</span>
+        Композиция — это размещение и связь элементов на холсте. Её задача — вести взгляд зрителя от главной точки фокуса к второстепенным.
+      </div>
+
+      <h3>Принципы и правила</h3>
+      <ul>
+        <li><strong>Числа Фибоначчи</strong> — последовательность, где каждое число равно сумме двух предыдущих (1, 1, 2, 3, 5, 8, 13…). Используется для размещения фокусных точек.</li>
+        <li><strong>Золотое сечение</strong> — пропорция ≈ 1:1,618. Визуализируется спиралью Фибоначчи.</li>
+        <li><strong>Правило третей</strong> — упрощённая версия золотого сечения. Холст делится на 9 равных частей; фокусные зоны ставят в точки пересечения линий.</li>
+        <li><strong>Срединная линия</strong> — вертикальная или горизонтальная ось через центр; элементы по обе стороны должны быть уравновешены.</li>
+      </ul>
+
+      <h3>Типы композиционных структур</h3>
+      <table>
+        <thead><tr><th>Тип</th><th>Описание</th></tr></thead>
+        <tbody>
+          <tr><td>Одна точка фокуса</td><td>Один центральный элемент, остальное вспомогательно</td></tr>
+          <tr><td>Множественные точки фокуса</td><td>Несколько зон интереса с чёткой иерархией</td></tr>
+          <tr><td>Рамочная</td><td>Обрамление главного объекта окружающими элементами</td></tr>
+          <tr><td>Путевая</td><td>Маршрут для взгляда через направляющие линии</td></tr>
+          <tr><td>Симметричная</td><td>Зеркальное отражение по срединной линии</td></tr>
+          <tr><td>Асимметричная</td><td>Явные различия между сторонами при общем балансе</td></tr>
+          <tr><td>Ведущие линии</td><td>Объекты направляют внимание (дороги, реки, контуры тел)</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Инструменты</h3>
+      <p>В Adobe Photoshop сетки композиции строятся через <code>Crop Tool (Рамка)</code>.</p>
+    </section>
+
+    <!-- 2 -->
+    <section id="s2">
+      <h2><span class="n">02</span> Композиция кадра — планы <a href="#s2" class="anchor anchor-link"></a></h2>
+      <table>
+        <thead><tr><th>План</th><th>Кадрирование</th><th>Назначение</th></tr></thead>
+        <tbody>
+          <tr><td>Дальний</td><td>Персонаж 1/7–1/10 кадра</td><td>Атмосфера, окружение</td></tr>
+          <tr><td>Общий</td><td>Свободное место над головой и под ногами</td><td>Появление/уход персонажей</td></tr>
+          <tr><td>Второй средний</td><td>От уровня колен и выше</td><td>Важные диалоги</td></tr>
+          <tr><td>Первый средний (поясной)</td><td>Выше талии</td><td>Диалоги, действие</td></tr>
+          <tr><td>Крупный</td><td>От середины груди и выше</td><td>Эмоции, сопереживание</td></tr>
+          <tr><td>Макро</td><td>Экстремальное приближение</td><td>Драматический акцент, детали</td></tr>
+        </tbody>
+      </table>
+      <div class="card warn">
+        <span class="label">Психология</span>
+        Близкие планы повышают сопереживание зрителя; удалённые концентрируют внимание на окружении.
+      </div>
+    </section>
+
+    <!-- 3 -->
+    <section id="s3">
+      <h2><span class="n">03</span> Монтаж: 10 принципов гладкого монтажа <a href="#s3" class="anchor anchor-link"></a></h2>
+      <ol>
+        <li><strong>По крупности.</strong> Не клеить кадры одинакового размера с одним персонажем; использовать промежуточные планы (реакции).</li>
+        <li><strong>По ориентации в пространстве.</strong> Между персонажами есть <em>ось взаимодействия</em>. Все точки съёмки должны быть с одной стороны этой оси.</li>
+        <li><strong>По направлению движения.</strong> Движение продолжается в одном направлении при склейке.</li>
+        <li><strong>По фазе движения.</strong> Клеить на начале или конце движения, выбрасывая середину.</li>
+        <li><strong>По темпу.</strong> Скорость движения постоянна от кадра к кадру.</li>
+        <li><strong>По композиционному центру.</strong> Положение героя меняется плавно.</li>
+        <li><strong>По свету.</strong> Характер освещения единый в рамках одного действия.</li>
+        <li><strong>По цвету.</strong> Избегать резких цветовых переходов между склейками.</li>
+        <li><strong>По смещению осей.</strong> При смене плана меняются и расстояние, и угол съёмки.</li>
+        <li><strong>По направлению движущейся массы.</strong> Объём движущихся элементов согласован.</li>
+      </ol>
+    </section>
+
+    <!-- 4 -->
+    <section id="s4">
+      <h2><span class="n">04</span> Цветовые модели <a href="#s4" class="anchor anchor-link"></a></h2>
+
+      <h3>RGB (Red, Green, Blue)</h3>
+      <ul>
+        <li><strong>Аддитивная</strong> модель: цвета получаются добавлением света к чёрному.</li>
+        <li>Каналы 0–255, <strong>8 бит на канал</strong> (всего 24 бита) — ~16,7 миллиона цветов (256³).</li>
+        <li><code>(0,0,0)</code> — чёрный, <code>(255,255,255)</code> — белый.</li>
+        <li>Используется в дисплеях, мониторах, камерах, сканерах.</li>
+      </ul>
+
+      <h3>CMYK (Cyan, Magenta, Yellow, Key/Black)</h3>
+      <ul>
+        <li><strong>Субтрактивная</strong> модель: цвета получаются вычитанием света из белого.</li>
+        <li>Используется в <strong>печати</strong>.</li>
+        <li>Чёрный (Key) добавлен, потому что чистая смесь CMY даёт грязно-коричневый.</li>
+      </ul>
+
+      <h3>HSB / HSV</h3>
+      <div class="grid-2">
+        <div class="term"><div class="term-name">Hue (Оттенок)</div><div class="term-desc">Тип цвета на цветовом круге, 0–360°</div></div>
+        <div class="term"><div class="term-name">Saturation (Насыщенность)</div><div class="term-desc">Интенсивность цвета</div></div>
+        <div class="term"><div class="term-name">Brightness / Value</div><div class="term-desc">Светлота</div></div>
+      </div>
+      <p>HSL — то же, но с <strong>Lightness</strong> вместо Brightness.</p>
+
+      <h3>Lab (L*a*b*)</h3>
+      <p><code>L</code> — светлота, <code>a</code> — зелёный↔красный, <code>b</code> — синий↔жёлтый. <strong>Аппаратно-независимая</strong> модель, основана на восприятии.</p>
+
+      <h3>Дополнительно</h3>
+      <ul>
+        <li><strong>Grayscale</strong> — оттенки серого, без цвета.</li>
+        <li><strong>HEX</strong> — 16-ричное представление RGB для веба, формат <code>#RRGGBB</code>, цифры 0–9 и A–F. Пример: <code>#9932CC</code>.</li>
+      </ul>
+    </section>
+
+    <!-- 5 -->
+    <section id="s5">
+      <h2><span class="n">05</span> Гамма-коррекция и цветовые пространства <a href="#s5" class="anchor anchor-link"></a></h2>
+      <ul>
+        <li><strong>Гамма</strong> — степенное преобразование яркости. Дисплеи имеют нелинейный отклик (γ ≈ 2,2).</li>
+        <li><strong>sRGB</strong> — стандартное цветовое пространство веба и большинства мониторов; гамма ≈ 2,2.</li>
+        <li><strong>Linear (γ = 1)</strong> — используется внутри 3D-движков и при рендере (свет складывается по физическим законам).</li>
+        <li><strong>Гамма-коррекция</strong> компенсирует нелинейность дисплея и нелинейность восприятия яркости человеком.</li>
+        <li><strong>Adobe RGB</strong> и <strong>ProPhoto RGB</strong> — более широкие охваты, чем sRGB.</li>
+      </ul>
+    </section>
+
+    <!-- 6 -->
+    <section id="s6">
+      <h2><span class="n">06</span> Методы повышения контрастности <a href="#s6" class="anchor anchor-link"></a></h2>
+      <table>
+        <thead><tr><th>Метод</th><th>Суть</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Линейное растяжение</strong></td>
+            <td>Приведение яркости к полному диапазону. Формула: <code>z' = (z – z_min)/(z_max – z_min) × z_max</code></td>
+          </tr>
+          <tr>
+            <td><strong>Гамма-коррекция</strong></td>
+            <td><code>n = 2…10</code> — повышает контраст в высоких яркостях; <code>n = 0,1…0,5</code> — в низких</td>
+          </tr>
+          <tr>
+            <td><strong>Соляризация</strong></td>
+            <td>Увеличивает различимость соседних фрагментов слиянием симметричных по яркости элементов</td>
+          </tr>
+          <tr>
+            <td><strong>Адаптивные методы</strong></td>
+            <td>Учитывают локальную окрестность пикселя (гистограмма, энтропия, СКО)</td>
+          </tr>
+          <tr>
+            <td><strong>Эквализация гистограммы</strong></td>
+            <td>Выравнивание распределения яркостей по всему диапазону</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 7 -->
+    <section id="s7">
+      <h2><span class="n">07</span> Освещение сцены <a href="#s7" class="anchor anchor-link"></a></h2>
+
+      <h3>Шесть направлений света</h3>
+      <ol>
+        <li><strong>Front</strong> — спереди под углом 30–45°.</li>
+        <li><strong>Back / контровой</strong> — из глубины, создаёт силуэты, отделяет объект от фона.</li>
+        <li><strong>Side / боковой</strong> — моделирует объём, форму.</li>
+        <li><strong>Top / верхний</strong> — со штанкетов над сценой.</li>
+        <li><strong>Нижний</strong> — из-под рампы, эффектный приём.</li>
+        <li><strong>На задник</strong> — отделяет фон от переднего плана.</li>
+      </ol>
+
+      <h3>Типы источников</h3>
+      <div class="grid-2">
+        <div class="term"><div class="term-name">Floodlights</div><div class="term-desc">Прожекторы общего освещения; широкий равномерный свет без чёткой границы; заливка фона</div></div>
+        <div class="term"><div class="term-name">Spotlights</div><div class="term-desc">Профильные, френели, PC, pinspot — направленный свет для акцентов</div></div>
+        <div class="term"><div class="term-name">Movinghead</div><div class="term-desc">Интеллектуальные приборы с управлением направлением, цветом, формой луча</div></div>
+      </div>
+
+      <h3>Классическая трёхточечная схема</h3>
+      <div class="grid-2">
+        <div class="term"><div class="term-name">Key light (рисующий)</div><div class="term-desc">Главный источник, формирует основной светотеневой рисунок</div></div>
+        <div class="term"><div class="term-name">Fill light (заполняющий)</div><div class="term-desc">Смягчает тени от key, обычно слабее по интенсивности</div></div>
+        <div class="term"><div class="term-name">Back light (контровой)</div><div class="term-desc">Сзади-сверху, обводит силуэт, отделяет от фона</div></div>
+      </div>
+    </section>
+
+    <!-- 8 -->
+    <section id="s8">
+      <h2><span class="n">08</span> VFX и компьютерная графика: термины <a href="#s8" class="anchor anchor-link"></a></h2>
+      <div class="grid-2">
+        <div class="term"><div class="term-name">Rendering</div><div class="term-desc">Просчёт итогового изображения из 3D-сцены или композиции</div></div>
+        <div class="term"><div class="term-name">Compositing</div><div class="term-desc">Сборка финального кадра из множества слоёв</div></div>
+        <div class="term"><div class="term-name">Keying</div><div class="term-desc">Извлечение прозрачности по цвету (chroma key)</div></div>
+        <div class="term"><div class="term-name">Rotoscoping</div><div class="term-desc">Покадровое обведение объекта маской вручную</div></div>
+        <div class="term"><div class="term-name">Tracking</div><div class="term-desc">Отслеживание движения точек/объектов и привязка CG-элементов</div></div>
+        <div class="term"><div class="term-name">Motion Blur</div><div class="term-desc">Размытие движущихся объектов, имитация эффекта реальной камеры</div></div>
+        <div class="term"><div class="term-name">Alpha Channel</div><div class="term-desc">Дополнительный канал прозрачности (4-й в RGBA)</div></div>
+        <div class="term"><div class="term-name">Masking</div><div class="term-desc">Выделение области кадра для применения эффектов</div></div>
+        <div class="term"><div class="term-name">Keyframe</div><div class="term-desc">Кадр, фиксирующий значение параметра; промежутки интерполируются</div></div>
+        <div class="term"><div class="term-name">Animation</div><div class="term-desc">Изменение параметров слоёв во времени</div></div>
+        <div class="term"><div class="term-name">Codec</div><div class="term-desc">Алгоритм сжатия видео/аудио (H.264, H.265, ProRes, DNxHD)</div></div>
+        <div class="term"><div class="term-name">Rigging</div><div class="term-desc">Создание скелета и контролов для анимации 3D-модели</div></div>
+        <div class="term"><div class="term-name">Motion Graphics</div><div class="term-desc">Анимированная графика, типографика, инфографика</div></div>
+      </div>
+    </section>
+
+    <!-- 9 -->
+    <section id="s9">
+      <h2><span class="n">09</span> Adobe After Effects (основы) <a href="#s9" class="anchor anchor-link"></a></h2>
+      <ul>
+        <li>Работает по принципу <strong>слоёв</strong> (timeline + composition).</li>
+        <li><strong>Composition</strong> = «сцена» с настройками разрешения, fps, длительности.</li>
+        <li><strong>Pre-comp</strong> — вложенная композиция как один слой; используется для группировки и сложной анимации.</li>
+        <li><strong>Ключевые кадры</strong> ставятся на параметрах: Position, Scale, Rotation, Opacity и т.д.</li>
+        <li><strong>Easing / Graph Editor</strong> — управление ускорением и замедлением между кейфреймами.</li>
+        <li><strong>Маски</strong> рисуются прямо на слое и могут быть анимированы.</li>
+        <li><strong>Track Mattes</strong> — использование альфы или яркости одного слоя как маски для другого.</li>
+        <li><strong>Эффекты</strong> применяются к слоям (Glow, Blur, Color Correction, Curves и т.д.).</li>
+        <li><strong>Экспрессии</strong> — JavaScript для процедурной анимации: <code>wiggle</code>, <code>loopOut</code>, <code>time</code>.</li>
+      </ul>
+      <h3>Технические параметры</h3>
+      <ul>
+        <li><strong>Frame rate:</strong> 24 (кино), 25 (PAL), 30 (NTSC), 50/60 (плавность, веб).</li>
+        <li><strong>Разрешение:</strong> 1080p (1920×1080), 4K (3840×2160), вертикаль 9:16 для соцсетей.</li>
+        <li><strong>Рендер</strong> через Render Queue или Adobe Media Encoder.</li>
+      </ul>
+    </section>
+
+    <!-- 10 -->
+    <section id="s10">
+      <h2><span class="n">10</span> 12 принципов анимации (Disney) <a href="#s10" class="anchor anchor-link"></a></h2>
+      <table>
+        <thead><tr><th>Принцип</th><th>Что описывает</th></tr></thead>
+        <tbody>
+          <tr><td><strong>1. Squash &amp; Stretch</strong></td><td>Сжатие и растяжение, передаёт массу и упругость</td></tr>
+          <tr><td><strong>2. Anticipation</strong></td><td>Подготовительное движение перед основным</td></tr>
+          <tr><td><strong>3. Staging</strong></td><td>Постановка кадра, чтение действия с первого взгляда</td></tr>
+          <tr><td><strong>4. Straight Ahead vs Pose to Pose</strong></td><td>Анимация подряд или по ключевым позам</td></tr>
+          <tr><td><strong>5. Follow Through &amp; Overlapping</strong></td><td>Инерция, разные части тела двигаются с задержкой</td></tr>
+          <tr><td><strong>6. Slow In &amp; Slow Out</strong></td><td>Замедление в начале и конце движения (easing)</td></tr>
+          <tr><td><strong>7. Arcs</strong></td><td>Естественное движение по дугам, не по прямым</td></tr>
+          <tr><td><strong>8. Secondary Action</strong></td><td>Вспомогательное действие, обогащающее главное</td></tr>
+          <tr><td><strong>9. Timing</strong></td><td>Скорость и количество кадров определяют характер</td></tr>
+          <tr><td><strong>10. Exaggeration</strong></td><td>Преувеличение для выразительности</td></tr>
+          <tr><td><strong>11. Solid Drawing</strong></td><td>Объём, вес, перспектива</td></tr>
+          <tr><td><strong>12. Appeal</strong></td><td>Притягательность персонажа</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 11 -->
+    <section id="s11">
+      <h2><span class="n">11</span> GPU-рендеринг <a href="#s11" class="anchor anchor-link"></a></h2>
+      <ul>
+        <li><strong>Преимущество:</strong> параллельная обработка пикселей, скорость.</li>
+        <li><strong>Недостатки:</strong>
+          <ul>
+            <li>Ограничение <strong>VRAM</strong> — сложные сцены не помещаются.</li>
+            <li>Шумы в тенях, упрощённые алгоритмы для скорости.</li>
+            <li>Нестабильность драйверов, возможны падения системы.</li>
+            <li>Меньше поддерживаемых эффектов и материалов, чем у CPU.</li>
+          </ul>
+        </li>
+        <li><strong>Гибридный (CPU+GPU)</strong> рендер — компромисс.</li>
+        <li><strong>Технологии:</strong> CUDA и OptiX (NVIDIA), Vulkan, Metal (Apple).</li>
+        <li><strong>Движки:</strong> Octane, Redshift, Cycles GPU (Blender), V-Ray GPU.</li>
+      </ul>
+    </section>
+
+    <!-- 12 -->
+    <section id="s12">
+      <h2><span class="n">12</span> Bake (запечка) в AAA-пайплайне <a href="#s12" class="anchor anchor-link"></a></h2>
+      <div class="card accent">
+        <span class="label">Идея</span>
+        Запечка переносит детализацию с <strong>high-poly</strong> модели на <strong>low-poly</strong> через карты текстур. В игре крутится лёгкая модель, но выглядит детальной.
+      </div>
+
+      <h3>Основные карты</h3>
+      <table>
+        <thead><tr><th>Карта</th><th>Назначение</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Normal Map</strong></td>
+            <td>Векторы нормалей в RGB: R — горизонталь, G — вертикаль, B — углубления (редко)</td>
+          </tr>
+          <tr><td><strong>Ambient Occlusion (AO)</strong></td><td>Карта затенения в углублениях и углах</td></tr>
+          <tr><td><strong>Color ID</strong></td><td>Разделение модели по материалам цветами для удобства текстурирования</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Дополнительные</h3>
+      <div class="grid-2">
+        <div class="term"><div class="term-name">Curvature</div><div class="term-desc">Кривизна (выпуклости/вогнутости)</div></div>
+        <div class="term"><div class="term-name">World Space Normal</div><div class="term-desc">Нормали в мировых координатах</div></div>
+        <div class="term"><div class="term-name">Position</div><div class="term-desc">Позиции в пространстве</div></div>
+        <div class="term"><div class="term-name">Thickness</div><div class="term-desc">Толщина модели (для SSS)</div></div>
+      </div>
+
+      <h3>Инструменты</h3>
+      <p><strong>Marmoset Toolbag</strong> (Paint Skew), <strong>Substance Painter</strong>, Blender, Maya, 3DS Max, Cinema 4D.</p>
+
+      <h3>Избежание артефактов</h3>
+      <ul>
+        <li>Корректные <strong>hard/soft edges</strong> на low-poly.</li>
+        <li>Устранение зазоров между high и low.</li>
+        <li><strong>Триангуляция</strong> модели до запечки.</li>
+        <li>Использование <strong>Cage</strong> — оболочки, ограничивающей зону проекции лучей.</li>
+      </ul>
+    </section>
+
+    <!-- 13 -->
+    <section id="s13">
+      <h2><span class="n">13</span> Основы рендеринга <a href="#s13" class="anchor anchor-link"></a></h2>
+      <ul>
+        <li><strong>Растеризация</strong> — быстрый алгоритм, проецирует геометрию на пиксели; основа реал-тайм графики.</li>
+        <li><strong>Ray tracing</strong> — трассировка лучей, физически правдоподобные отражения, преломления, тени.</li>
+        <li><strong>Path Tracing</strong> — основа <strong>unbiased</strong> рендеринга (без систематических ошибок), Monte Carlo.</li>
+        <li><strong>Sampling:</strong> больше выборок на пиксель → меньше шума, но больше времени.</li>
+        <li><strong>Importance Sampling</strong> — концентрирует расчёты в сложных областях.</li>
+        <li><strong>Bidirectional Path Tracing (BDPT)</strong> — лучи трассируются и от камеры, и от источника света.</li>
+        <li><strong>Metropolis Light Transport (MLT)</strong> — мутация удачных путей вместо новых случайных.</li>
+        <li><strong>Voxelization</strong> — структуры ускорения, чтобы не проверять луч с каждым треугольником.</li>
+        <li><strong>Эффекты unbiased:</strong> глобальное освещение, каустики, depth of field, motion blur, subsurface scattering, мягкие тени.</li>
+      </ul>
+    </section>
+
+    <!-- 14 -->
+    <section id="s14">
+      <h2><span class="n">14</span> Растровая и векторная графика <a href="#s14" class="anchor anchor-link"></a></h2>
+      <table>
+        <thead><tr><th></th><th>Растровая</th><th>Векторная</th></tr></thead>
+        <tbody>
+          <tr><td>Описание</td><td>Массив пикселей</td><td>Математические кривые (Безье)</td></tr>
+          <tr><td>Масштабирование</td><td>Зависит от разрешения</td><td>Без потерь</td></tr>
+          <tr><td>Форматы</td><td>PNG, JPEG, TIFF, BMP</td><td>SVG, AI, EPS, PDF</td></tr>
+        </tbody>
+      </table>
+      <ul>
+        <li><strong>Пиксель</strong> — наименьший элемент растра.</li>
+        <li><strong>Разрешение</strong> — количество пикселей (1920×1080) или DPI/PPI (для печати).</li>
+      </ul>
+    </section>
+
+    <!-- 15 -->
+    <section id="s15">
+      <h2><span class="n">15</span> Академический рисунок (Ли Н.Г.) <a href="#s15" class="anchor anchor-link"></a></h2>
+      <ul>
+        <li><strong>Линия</strong> — основа построения; типы: построительная, контурная, тоновая.</li>
+        <li><strong>Штрих</strong> — короткие линии, формирующие тон и фактуру.</li>
+        <li><strong>Светотень:</strong> свет → полутень → собственная тень → рефлекс → падающая тень.</li>
+        <li><strong>Пропорции</strong> — соотношение размеров частей; голова как модуль для фигуры (~7,5 голов в фигуре взрослого).</li>
+        <li><strong>Перспектива:</strong>
+          <ul>
+            <li>Линейная — точки схода, горизонт.</li>
+            <li>Воздушная — дальние объекты теряют контраст и насыщенность.</li>
+          </ul>
+        </li>
+        <li><strong>Конструктивное построение</strong> — объект как набор геометрических примитивов.</li>
+      </ul>
+    </section>
+
+    <!-- 16 -->
+    <section id="s16">
+      <h2><span class="n">16</span> Этапы продакшна рекламного видео <a href="#s16" class="anchor anchor-link"></a></h2>
+      <div class="grid-2">
+        <div class="term"><div class="term-name">1. Pre-production</div><div class="term-desc">Концепция, сценарий, сторибординг, кастинг, локации, смета</div></div>
+        <div class="term"><div class="term-name">2. Production</div><div class="term-desc">Съёмка / анимация</div></div>
+        <div class="term"><div class="term-name">3. Post-production</div><div class="term-desc">Монтаж, цветокоррекция, VFX, саунд-дизайн, рендер, мастеринг</div></div>
+      </div>
+    </section>
+
+    <!-- Sources -->
+    <section id="sources">
+      <h2><span class="n">∞</span> Источники <a href="#sources" class="anchor anchor-link"></a></h2>
+      <ul>
+        <li>Гордон Ю. «О языке композиции» (2018)</li>
+        <li>Smirnov School. «Основы композиции для художников»</li>
+        <li>Киношкола. Статья о композиции и монтаже (10 принципов)</li>
+        <li>Studfile. «Композиция кадра: конспект лекций»</li>
+        <li>Сайдуллаев Х. «Технология рекламного видео» (URSS, 2020)</li>
+        <li>OTUS. «RGB: описание, использование, особенности»</li>
+        <li>Habr. «Цветовые пространства и гамма-коррекция»</li>
+        <li>Wikireading. «Теория цвета и модели представления изображений»</li>
+        <li>CyberLeninka. «Методы повышения контрастности растровых изображений»</li>
+        <li>Гонсалес Р., Вудс Р. «Цифровая обработка изображений» (Техносфера, 2012)</li>
+        <li>Ли Н.Г. «Рисунок. Основы учебного академического рисунка» (2017)</li>
+        <li>Sirius-SPb. «Освещение сцены: типы светильников и принципы расстановки»</li>
+        <li>Lopez C., Dockery J. «Learn Adobe After Effects CC for Visual Effects and Motion Graphics» (Adobe Press, 2019)</li>
+        <li>IURAF. Термины по компьютерной графике и VFX</li>
+        <li>Junior3D. «Проблемы GPU-рендеринга»</li>
+        <li>XYZ School. «Всё про bake (запечку) как этап AAA-пайплайна»</li>
+        <li>Habr. «Основы компьютерной графики и рендеринга»</li>
+      </ul>
+    </section>
+
+    <div class="footer-back">
+      <a href="index.html">← Вернуться к выбору варианта</a>
+    </div>
+  </main>
+
+</div>
+
+<script>
+  // Highlight active TOC entry on scroll
+  const tocLinks = document.querySelectorAll('.toc a[href^="#"]');
+  const sections = Array.from(tocLinks).map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        tocLinks.forEach(a => {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+        });
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
