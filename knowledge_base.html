@@ -287,6 +287,16 @@
       <li><a href="#s14">Растр и вектор</a></li>
       <li><a href="#s15">Академический рисунок</a></li>
       <li><a href="#s16">Этапы продакшна</a></li>
+      <li><a href="#s17">Режимы наложения</a></li>
+      <li><a href="#s18">Типографика и веб</a></li>
+      <li><a href="#s19">Расширенный монтаж</a></li>
+      <li><a href="#s20">Постпро-приёмы</a></li>
+      <li><a href="#s21">Частота кадров</a></li>
+      <li><a href="#s22">Z-depth и DOF</a></li>
+      <li><a href="#s23">HDRI и температура</a></li>
+      <li><a href="#s24">CG-освещение</a></li>
+      <li><a href="#s25">Motion Tracking</a></li>
+      <li><a href="#s26">Фриланс-практика</a></li>
       <li><a href="#sources">Источники</a></li>
     </ol>
   </aside>
@@ -294,7 +304,7 @@
   <main>
     <header class="top">
       <h1>База знаний: Моушн-дизайн</h1>
-      <p class="lead">Сводка по литературе для подготовки к тесту. 16 тем — от композиции и монтажа до GPU-рендера и запечки карт.</p>
+      <p class="lead">Сводка по литературе для подготовки к тесту. 26 тем — от композиции и монтажа до постпро, motion tracking и фриланс-практики.</p>
     </header>
 
     <!-- 1 -->
@@ -661,28 +671,269 @@
       </div>
     </section>
 
+    <!-- 17 -->
+    <section id="s17">
+      <h2><span class="n">17</span> Режимы наложения (Blending Modes) <a href="#s17" class="anchor anchor-link"></a></h2>
+      <p>Режимы наложения определяют, как пиксели верхнего слоя комбинируются с нижними.</p>
+      <h3>Затемняющие · нейтральный белый</h3>
+      <ul>
+        <li><strong>Multiply</strong> — перемножает каналы (a×b/255); всегда затемняет.</li>
+        <li><strong>Darken</strong> — берёт минимум поканально: min(a,b).</li>
+        <li><strong>Color Burn</strong> — затемняет с усилением контраста; белый нейтрален.</li>
+        <li><strong>Linear Burn</strong> — a+b−255; даёт более глубокие тени.</li>
+      </ul>
+      <h3>Осветляющие · нейтральный чёрный</h3>
+      <ul>
+        <li><strong>Screen</strong> — инверсия Multiply; всегда осветляет.</li>
+        <li><strong>Lighten</strong> — берёт max(a,b).</li>
+        <li><strong>Color Dodge</strong> — осветляет с усилением контраста: a/(255−b).</li>
+        <li><strong>Add (Linear Dodge)</strong> — a+b с клиппингом до 255.</li>
+      </ul>
+      <h3>Контрастные · нейтральный 50% серый</h3>
+      <ul>
+        <li><strong>Overlay</strong> — Multiply для тёмных, Screen для светлых.</li>
+        <li><strong>Soft Light</strong> — мягкий вариант Overlay.</li>
+        <li><strong>Hard Light</strong> — жёсткий вариант с инверсией ролей.</li>
+      </ul>
+      <h3>Сравнительные и компонентные</h3>
+      <ul>
+        <li><strong>Difference</strong> — |a−b|; одинаковые пиксели дают чёрный.</li>
+        <li><strong>Exclusion</strong> — мягкая Difference.</li>
+        <li><strong>Hue / Saturation / Color / Luminosity</strong> — переносят соответствующий компонент HSL.</li>
+      </ul>
+    </section>
+
+    <!-- 18 -->
+    <section id="s18">
+      <h2><span class="n">18</span> Типографика и веб-дизайн <a href="#s18" class="anchor anchor-link"></a></h2>
+      <ul>
+        <li><strong>Кегль</strong> — размер шрифта в пунктах (1 pt ≈ 1/72″).</li>
+        <li><strong>Интерлиньяж (leading)</strong> — расстояние между базовыми линиями строк, обычно 120–145% кегля.</li>
+        <li><strong>Кернинг</strong> — расстояние между конкретной парой символов (AV, To).</li>
+        <li><strong>Трекинг</strong> — равномерное изменение межбуквенных интервалов.</li>
+        <li><strong>Гарнитура vs шрифт</strong> — гарнитура (Helvetica) — семейство; шрифт (Helvetica Bold 12 pt) — конкретное начертание.</li>
+        <li><strong>Serif</strong> — лучше читается в длинном печатном тексте; <strong>Sans-serif</strong> — для экрана.</li>
+        <li><strong>Модульная сетка</strong> — система колонок и базовых линий.</li>
+        <li><strong>Иерархия</strong> — главное → второстепенное через размер, цвет, насыщенность.</li>
+        <li><strong>Контраст в вебе</strong> — WCAG ≥ 4.5:1 для основного текста.</li>
+      </ul>
+    </section>
+
+    <!-- 19 -->
+    <section id="s19">
+      <h2><span class="n">19</span> Расширенный монтаж — типы склеек <a href="#s19" class="anchor anchor-link"></a></h2>
+      <table>
+        <thead><tr><th>Тип</th><th>Что делает</th></tr></thead>
+        <tbody>
+          <tr><td>Cut</td><td>Мгновенная склейка, базовый тип</td></tr>
+          <tr><td>Dissolve</td><td>Плавный переход через смешение; время или место</td></tr>
+          <tr><td>Fade in / out</td><td>Переход из/в чёрный; начало или конец сцены</td></tr>
+          <tr><td>Wipe</td><td>Один кадр вытесняет другой по траектории</td></tr>
+          <tr><td>J-cut</td><td>Звук следующей сцены приходит раньше изображения</td></tr>
+          <tr><td>L-cut</td><td>Звук предыдущей сцены тянется в следующую</td></tr>
+          <tr><td>Match cut</td><td>Склейка по графическому или смысловому совпадению</td></tr>
+          <tr><td>Jump cut</td><td>Нарочное нарушение пространственно-временной логики</td></tr>
+          <tr><td>Cross-cutting</td><td>Параллельный монтаж двух одновременных действий</td></tr>
+        </tbody>
+      </table>
+      <div class="card warn">
+        <span class="label">Правило 180°</span>
+        Все камеры в сцене диалога должны быть по одну сторону воображаемой оси между персонажами.
+      </div>
+    </section>
+
+    <!-- 20 -->
+    <section id="s20">
+      <h2><span class="n">20</span> Постпро-приёмы <a href="#s20" class="anchor anchor-link"></a></h2>
+      <h3>Clean plate</h3>
+      <ul>
+        <li>Статичный кадр без актёров и движущихся объектов, при том же освещении и положении камеры.</li>
+        <li>Используется для wire/rig removal, удаления людей, маркеров трекинга.</li>
+        <li>База для set extension и sky replacement.</li>
+        <li>Для движущейся камеры — в связке с camera tracking + проекцией.</li>
+      </ul>
+      <h3>Ротоскопинг (углублённо)</h3>
+      <ul>
+        <li>Изобретён Максом Флейшером (1915).</li>
+        <li>Применяется, когда chroma key невозможен: волосы, motion blur, нет зелёного фона.</li>
+        <li><strong>Garbage matte</strong> — грубая внешняя маска, отсекающая лишние области.</li>
+        <li><strong>Раздельный ротоскоп</strong> — отдельные маски на части тела.</li>
+        <li>Инструменты: Mocha Pro, AE Roto Brush, Silhouette, Nuke RotoPaint.</li>
+      </ul>
+      <h3>Цифровой композитинг (Wright)</h3>
+      <ul>
+        <li><strong>Premultiplied alpha</strong> — RGB уже умножены на α; <strong>Straight</strong> — независимы. Неверная интерпретация → ободки на краях.</li>
+        <li><strong>Linear color space</strong> — корректная математика; перед операциями linearize, перед отображением — gamma encode.</li>
+        <li><strong>Despill</strong> — удаление цветного засвета фона после chroma key.</li>
+        <li><strong>Edge matte</strong> — узкая маска контура для отдельной обработки границы.</li>
+        <li><strong>Integration</strong>: grain matching, баланс белого, чёрная точка, контраст, расфокус, motion blur.</li>
+        <li><strong>32-bit float</strong> обязателен для HDR-значений (свечения, блики).</li>
+        <li><strong>Multi-pass compositing</strong> — сборка из beauty / diffuse / specular / refl / AO / Z.</li>
+      </ul>
+    </section>
+
+    <!-- 21 -->
+    <section id="s21">
+      <h2><span class="n">21</span> Частота кадров и видеостандарты <a href="#s21" class="anchor anchor-link"></a></h2>
+      <table>
+        <thead><tr><th>fps</th><th>Применение</th></tr></thead>
+        <tbody>
+          <tr><td>24</td><td>Кинематографический стандарт</td></tr>
+          <tr><td>25</td><td>PAL (Европа, Россия)</td></tr>
+          <tr><td>29.97 / 30</td><td>NTSC (США, Япония)</td></tr>
+          <tr><td>50 / 60</td><td>Спорт, плавный slow-motion, веб</td></tr>
+          <tr><td>120+</td><td>Высокоскоростная съёмка для замедления</td></tr>
+        </tbody>
+      </table>
+      <ul>
+        <li><strong>Interlaced (i)</strong> — чётные/нечётные строки поочерёдно (1080i).</li>
+        <li><strong>Progressive (p)</strong> — все строки одновременно (1080p, 24p).</li>
+        <li><strong>NTSC</strong>: 525 строк / 29.97 fps. <strong>PAL</strong>: 625 строк / 25 fps.</li>
+        <li><strong>Drop-frame timecode</strong> компенсирует расхождение 29.97 vs 30 в NTSC.</li>
+        <li><strong>Soap opera effect</strong> — ощущение «мыльной оперы» при 60 fps в кино.</li>
+      </ul>
+    </section>
+
+    <!-- 22 -->
+    <section id="s22">
+      <h2><span class="n">22</span> Z-depth, DOF, Bokeh <a href="#s22" class="anchor anchor-link"></a></h2>
+      <h3>Z-depth (Z-pass)</h3>
+      <ul>
+        <li>Технический канал; в каждом пикселе хранится расстояние от камеры до поверхности.</li>
+        <li>Чёрный = ближе, белый = дальше (или наоборот в зависимости от настройки).</li>
+        <li>Использование: post-DOF, атмосферный туман, цветокоррекция по глубине, маски планов.</li>
+        <li>Сохранять в <strong>16-/32-bit float (EXR)</strong>; 8-bit даёт ступеньки.</li>
+        <li>AE-плагины: Frischluft Lenscare, RG Lenscare, встроенный Camera Lens Blur.</li>
+        <li>Альтернатива — <strong>deep compositing</strong> (deep EXR).</li>
+      </ul>
+      <h3>Depth of Field (DOF)</h3>
+      <ul>
+        <li><strong>F-stop</strong> — диафрагма; меньше число (f/1.4) → сильнее размытие.</li>
+        <li><strong>Focus distance</strong> — расстояние до плоскости резкости.</li>
+        <li><strong>Bokeh</strong> — форма пятен размытия от точечных источников; зависит от формы лепестков диафрагмы.</li>
+        <li>В Corona Renderer: Camera → Depth of field; форма bokeh — bokeh shape.</li>
+        <li>DOF удлиняет рендер; альтернатива — Z-depth + post-DOF.</li>
+      </ul>
+    </section>
+
+    <!-- 23 -->
+    <section id="s23">
+      <h2><span class="n">23</span> HDRI и цветовая температура <a href="#s23" class="anchor anchor-link"></a></h2>
+      <h3>HDRI и IBL</h3>
+      <ul>
+        <li><strong>HDRI</strong> — панорама со значениями яркости >1.0; форматы <code>.hdr</code> (Radiance) и <code>.exr</code> (OpenEXR).</li>
+        <li><strong>IBL (Image-Based Lighting)</strong> — освещение сцены HDRI-картой.</li>
+        <li>Подключается к Dome / Environment light; экспозицией и поворотом регулируется интенсивность и направление.</li>
+        <li>Для совпадения CG с реальным планом снимают chrome ball + grey ball.</li>
+      </ul>
+      <h3>Цветовая температура</h3>
+      <table>
+        <thead><tr><th>Кельвины</th><th>Источник</th></tr></thead>
+        <tbody>
+          <tr><td>2700–3000 K</td><td>Тёплый (лампа накаливания)</td></tr>
+          <tr><td>4000 K</td><td>Нейтрально-тёплый</td></tr>
+          <tr><td>5500–6500 K</td><td>Дневной свет (D65 — стандарт мониторов)</td></tr>
+          <tr><td>10000 K +</td><td>Холодный (тень, синее небо)</td></tr>
+        </tbody>
+      </table>
+      <p>Ниже температура — краснее/желтее свет. Выше — синее (физика чёрного тела).</p>
+    </section>
+
+    <!-- 24 -->
+    <section id="s24">
+      <h2><span class="n">24</span> Цифровое освещение в CG (Birn) <a href="#s24" class="anchor anchor-link"></a></h2>
+      <h3>Типы CG-источников</h3>
+      <div class="grid-2">
+        <div class="term"><div class="term-name">Point (omni)</div><div class="term-desc">Точечный, светит во все стороны</div></div>
+        <div class="term"><div class="term-name">Directional / Sun</div><div class="term-desc">Параллельные лучи, бесконечно удалён</div></div>
+        <div class="term"><div class="term-name">Spot</div><div class="term-desc">Конус с углом раскрытия и затуханием по краю</div></div>
+        <div class="term"><div class="term-name">Area</div><div class="term-desc">Прямоугольник или диск; даёт мягкие тени</div></div>
+        <div class="term"><div class="term-name">IBL / Environment</div><div class="term-desc">На основе HDRI</div></div>
+      </div>
+      <h3>Принципы</h3>
+      <ul>
+        <li><strong>Inverse square law</strong> — интенсивность падает как 1/r².</li>
+        <li><strong>Тени</strong>: raytrace (точные, медленные) vs shadow maps (быстрые, требуют bias).</li>
+        <li><strong>GI / bounce light</strong> — отражённый свет; даёт color bleeding.</li>
+        <li><strong>Motivated lighting</strong> — каждый источник имеет видимое или подразумеваемое объяснение в кадре.</li>
+        <li><strong>Контраст key:fill</strong> — высокий = drama, низкий = high-key.</li>
+        <li><strong>Тёплый key + холодный fill</strong> — приём teal & orange.</li>
+      </ul>
+    </section>
+
+    <!-- 25 -->
+    <section id="s25">
+      <h2><span class="n">25</span> Motion Tracking в After Effects <a href="#s25" class="anchor anchor-link"></a></h2>
+      <table>
+        <thead><tr><th>Тип</th><th>Что отслеживает</th></tr></thead>
+        <tbody>
+          <tr><td>1-point</td><td>Позицию (X, Y) одной точки</td></tr>
+          <tr><td>2-point</td><td>Позицию + поворот + масштаб</td></tr>
+          <tr><td>4-point (Corner Pin)</td><td>Четыре угла плоскости (экран, билборд)</td></tr>
+          <tr><td>3D Camera Tracker</td><td>Восстанавливает движение виртуальной камеры по features</td></tr>
+          <tr><td>Mocha (Planar)</td><td>Отслеживает плоскости; устойчив к motion blur</td></tr>
+        </tbody>
+      </table>
+      <ul>
+        <li><strong>Track point</strong>: feature region (внутр.), search region (внешн.), attach point (крестик).</li>
+        <li>Хорошая трек-точка — высококонтрастная, не перекрытая, видна весь кадр.</li>
+        <li><strong>Stabilize Motion</strong> — обратное применение трека для устранения тряски.</li>
+        <li>Перед трекингом — убрать lens distortion; после — вернуть для плоских объектов.</li>
+      </ul>
+    </section>
+
+    <!-- 26 -->
+    <section id="s26">
+      <h2><span class="n">26</span> Фриланс-практика моушн-дизайнера <a href="#s26" class="anchor anchor-link"></a></h2>
+      <ul>
+        <li><strong>Day rate / Project rate / Retainer</strong> — три модели оплаты.</li>
+        <li><strong>USP</strong> — Unique Selling Proposition; то, что отличает от конкурентов.</li>
+        <li><strong>Deliverables</strong> в контракте: формат, разрешение, кодек, число ревизий, сроки.</li>
+        <li><strong>Контракт обязателен</strong> даже для дружеских проектов.</li>
+        <li>Портфолио показывает <em>ту работу, которую хочется получать</em>, а не «всё, что умеешь».</li>
+      </ul>
+    </section>
+
     <!-- Sources -->
     <section id="sources">
       <h2><span class="n">∞</span> Источники <a href="#sources" class="anchor anchor-link"></a></h2>
-      <ul>
+      <ol>
         <li>Гордон Ю. «О языке композиции» (2018)</li>
         <li>Smirnov School. «Основы композиции для художников»</li>
         <li>Киношкола. Статья о композиции и монтаже (10 принципов)</li>
+        <li>Материал по композиции (xn--jtbadk9bega7k)</li>
         <li>Studfile. «Композиция кадра: конспект лекций»</li>
         <li>Сайдуллаев Х. «Технология рекламного видео» (URSS, 2020)</li>
+        <li>Mabuk.ru. «Основы монтажа»</li>
+        <li>Walsh S. «The Clean Plate» (Bullitt Postvis Study)</li>
+        <li>MaskedBrothers. «Rotoscoping»</li>
+        <li>CG Lavity / Sony. «Что такое частота кадров»</li>
+        <li>Кирсанов Д. «Веб-дизайн» (Символ-Плюс, 1999)</li>
+        <li>Awdee. «Режимы наложения (Blending Modes)»</li>
+        <li>Awdee. «Режимы наложения (Blending Modes)» — повтор источника</li>
+        <li>Contentdoc. «RGB: глоссарий»</li>
+        <li>IColorIt. «Цветовые модели CMYK, RGB, HSB»</li>
         <li>OTUS. «RGB: описание, использование, особенности»</li>
         <li>Habr. «Цветовые пространства и гамма-коррекция»</li>
         <li>Wikireading. «Теория цвета и модели представления изображений»</li>
         <li>CyberLeninka. «Методы повышения контрастности растровых изображений»</li>
         <li>Гонсалес Р., Вудс Р. «Цифровая обработка изображений» (Техносфера, 2012)</li>
-        <li>Ли Н.Г. «Рисунок. Основы учебного академического рисунка» (2017)</li>
+        <li>Ли Н.Г. «Рисунок. Основы учебного академического рисунка» (2017) — повторов 4</li>
         <li>Sirius-SPb. «Освещение сцены: типы светильников и принципы расстановки»</li>
-        <li>Lopez C., Dockery J. «Learn Adobe After Effects CC for Visual Effects and Motion Graphics» (Adobe Press, 2019)</li>
+        <li>Blona-1915. «Z-depth»</li>
+        <li>CGBandit. «Глубина резкости (DOF) в Corona Renderer»</li>
+        <li>Kurshub. «Motion Tracking в After Effects»</li>
+        <li>Svetoproekt. «HDRI и цветовая температура»</li>
+        <li>Birn J. «Digital Lighting and Rendering» (New Riders, 2006) — 2 повтора</li>
+        <li>Wright S. «Digital Compositing for Film and Video» (Focal Press, 2009) — 3 повтора</li>
+        <li>Korenman J. «The Freelance Manifesto» (2017)</li>
+        <li>Chavez C., Dockery J. «Learn Adobe After Effects CC for Visual Effects and Motion Graphics» (Adobe Press, 2019)</li>
         <li>IURAF. Термины по компьютерной графике и VFX</li>
         <li>Junior3D. «Проблемы GPU-рендеринга»</li>
         <li>XYZ School. «Всё про bake (запечку) как этап AAA-пайплайна»</li>
         <li>Habr. «Основы компьютерной графики и рендеринга»</li>
-      </ul>
+      </ol>
+      <p style="color:var(--muted); font-size:14px;">Всего 40 пунктов в исходном списке (с дубликатами). Уникальных источников — 34.</p>
     </section>
 
     <div class="footer-back">
