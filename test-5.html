@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тест по моушн-дизайну · Вариант 5 (со скриншотов)</title>
+<style>
+  :root {
+    --bg: #0f1115;
+    --surface: #1a1d24;
+    --surface-2: #242830;
+    --text: #e7e9ee;
+    --muted: #9aa0ad;
+    --accent: #4f8cff;
+    --correct: #2ecc71;
+    --wrong: #e74c3c;
+    --warn: #f39c12;
+    --border: #2c313b;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.55;
+  }
+  .container {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 32px 20px 80px;
+  }
+  header {
+    margin-bottom: 28px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 20px;
+  }
+  h1 {
+    margin: 0 0 6px;
+    font-size: 28px;
+    font-weight: 600;
+  }
+  .subtitle {
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .progress-bar {
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    padding: 10px 0;
+    z-index: 10;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+    font-size: 14px;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .progress-track {
+    flex: 1;
+    height: 4px;
+    background: var(--surface-2);
+    border-radius: 2px;
+    margin: 0 14px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    width: 0%;
+    transition: width 0.2s;
+  }
+  .question {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 14px;
+  }
+  .q-num {
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .q-text {
+    font-size: 16px;
+    margin-bottom: 14px;
+    font-weight: 500;
+  }
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 10px 12px;
+    background: var(--surface-2);
+    border: 1px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.12s, border-color 0.12s;
+    font-size: 15px;
+  }
+  .option:hover {
+    background: #2d323c;
+  }
+  .option input {
+    margin-top: 3px;
+    accent-color: var(--accent);
+    flex-shrink: 0;
+  }
+  .option.selected {
+    border-color: var(--accent);
+    background: #2a3344;
+  }
+  .option.correct {
+    border-color: var(--correct);
+    background: rgba(46, 204, 113, 0.12);
+  }
+  .option.wrong {
+    border-color: var(--wrong);
+    background: rgba(231, 76, 60, 0.12);
+  }
+  .option-letter {
+    font-weight: 600;
+    color: var(--muted);
+    min-width: 18px;
+  }
+  .actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+  }
+  button {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 12px 22px;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.12s, opacity 0.12s;
+    font-family: inherit;
+  }
+  button:hover { background: #3d77e6; }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  button.secondary {
+    background: var(--surface-2);
+    color: var(--text);
+  }
+  button.secondary:hover { background: #2d323c; }
+
+  .results {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+  .score {
+    font-size: 42px;
+    font-weight: 700;
+    margin: 6px 0;
+  }
+  .score-label {
+    color: var(--muted);
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+  }
+  .grade {
+    margin-top: 10px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-weight: 500;
+    display: inline-block;
+  }
+  .grade.excellent { background: rgba(46,204,113,0.15); color: var(--correct); }
+  .grade.good      { background: rgba(79,140,255,0.15); color: var(--accent); }
+  .grade.ok        { background: rgba(243,156,18,0.15); color: var(--warn); }
+  .grade.weak      { background: rgba(231,76,60,0.15); color: var(--wrong); }
+  .topic-stats {
+    margin-top: 18px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 8px;
+  }
+  .topic-stat {
+    background: var(--surface-2);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .topic-stat .pct { font-weight: 600; }
+  .pct.ok { color: var(--correct); }
+  .pct.mid { color: var(--warn); }
+  .pct.low { color: var(--wrong); }
+
+  .review-q {
+    border-left: 4px solid var(--correct);
+  }
+  .review-q.is-wrong {
+    border-left-color: var(--wrong);
+  }
+  .review-q.is-skipped {
+    border-left-color: var(--warn);
+  }
+  .explain {
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: rgba(79,140,255,0.08);
+    border-left: 3px solid var(--accent);
+    border-radius: 4px;
+    font-size: 14px;
+    color: var(--muted);
+  }
+  .explain strong { color: var(--text); }
+
+  .hidden { display: none; }
+  @media (max-width: 600px) {
+    h1 { font-size: 22px; }
+    .container { padding: 16px 12px 60px; }
+    .question { padding: 14px 14px; }
+    .score { font-size: 34px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Тест по моушн-дизайну · Вариант 5</h1>
+    <div class="subtitle">20 вопросов · собрано со скриншотов реального теста</div>
+    <div class="subtitle"><a href="index.html" style="color:#4f8cff;">← к выбору варианта</a></div>
+  </header>
+
+  <div id="progress-bar" class="progress-bar">
+    <span id="progress-text">0 / 20</span>
+    <div class="progress-track"><div id="progress-fill" class="progress-fill"></div></div>
+    <span id="progress-pct">0%</span>
+  </div>
+
+  <form id="quiz-form"></form>
+
+  <div class="actions" id="action-area">
+    <button type="button" id="submit-btn">Проверить результат</button>
+    <button type="button" class="secondary" id="reset-btn">Сбросить</button>
+  </div>
+
+  <div id="results" class="results hidden"></div>
+</div>
+
+<script>
+const questions = [
+  {q:"Что такое Clean Plate (Клин Плейт)?",options:["Чистый кадр фона для композитинга.","Чистый кадр актера на зеленом фоне.","Кадр с равномерным освещением.","Кадр с ровной поверхностью для снятия отражений."],correct:0,explain:"Clean plate — статичный кадр сцены без актёров и движущихся объектов, снятый при тех же условиях освещения; нужен для wire removal, set extension и других задач композитинга.",topic:"VFX / Композ"},
+  {q:"Что происходит при повышении контрастности изображения?",options:["Темные области становятся темнее, светлые светлее, средние остаются без изменений.","Темные области осветляются, светлые применяются, средние остаются как были.","Темные и светлые остаются как были, средние становятся светлее.","Все изображение становится светлее.","Все изображение становится темнее."],correct:0,explain:"Контраст растягивает гистограмму: тени уходят темнее, света — ярче, средние тона (около 128) остаются почти неизменными.",topic:"Цветокоррекция"},
+  {q:"Как называется визуальный эффект, когда во время движения камеры статичные объекты движутся с разной скоростью в кадре в зависимости от их расстояния до камеры?",options:["Параллакс.","Рендеринг Z-пасса.","Эффект оптического искажения.","Рефлексия."],correct:0,explain:"Параллакс — кажущееся смещение объектов с разной скоростью при движении наблюдателя; ближние объекты «бегут» быстрее, дальние — медленнее.",topic:"Камера"},
+  {q:"Какой формат является лучшим для экспорта анимации в высоком разрешении с прозрачным фоном (альфа-канал)?",options:["MP4.","DWG.","MOV.","AEP."],correct:2,explain:"MOV (QuickTime) с кодеком Animation, ProRes 4444 или PNG поддерживает альфа-канал. MP4 (H.264) альфу не пишет, DWG — формат CAD, AEP — проект After Effects.",topic:"Экспорт"},
+  {q:"Что такое видеомонтаж по движению?",options:["Склейка двух монтажных планов через прозрачность.","Склейка двух монтажных планов, в которых совпадает направление движения объектов.","Склейка коротких планов для создания динамичного монтажа.","Склейка через транзишн, когда первый план вылезает, а второй въезжает в кадр."],correct:1,explain:"Монтаж по движению (по направлению) — склейка планов, в которых сохраняется вектор движения объекта, чтобы зритель не «спотыкался» о смену направления.",topic:"Монтаж"},
+  {q:"Как описать зеленый цвет в цветовой модели RGB?",options:["0 255 0.","100 0 100.","0 G 0.","G G G."],correct:0,explain:"В 8-битном RGB каналы записываются числами 0–255: чистый зелёный — R=0, G=255, B=0.",topic:"Цвет"},
+  {q:"Представим себе две параллельные прямые, которые находятся в перспективном геометрическом пространстве. Сходятся ли они? Если да, то как?",options:["Прямые сходятся в одной точке.","Прямые сходятся в одной плоскости.","Прямые не сходятся.","Прямые сходятся до точки пересечения, а потом расходятся."],correct:0,explain:"В линейной перспективе параллельные прямые сходятся в одной точке схода (vanishing point) на линии горизонта.",topic:"Перспектива"},
+  {q:"Что является главным ограничением рендеринга на GPU?",options:["Размер сцены ограничен объемом видеопамяти (VRAM).","Размер сцены ограничен объемом оперативной памяти.","Размер рендера в пикселях при GPU-рендере более ограничен чем при CPU.","При CPU-рендере можно использовать не один процессор, при GPU можно использовать только одну видеокарту."],correct:0,explain:"GPU-рендер хранит всю сцену (геометрию, текстуры, кеши) в VRAM, объём которой кратно меньше системной RAM — сложные сцены просто не помещаются.",topic:"Рендер"},
+  {q:"Что такое Rotoscoping (ротоскопинг)?",options:["Техника ручной обрисовки каждого кадра.","Техника ручной обрисовки каждого 10-го кадра.","Техника автоматического выделения объекта.","Техника отслеживания позиции объекта."],correct:0,explain:"Ротоскопинг — покадровое ручное обведение объекта маской для отделения его от фона.",topic:"VFX"},
+  {q:"Какой инструмент позволяет корректировать изображение по яркости и контрасту?",options:["Hue/Saturation.","Curves.","Color Balance.","Gaussian Blur."],correct:1,explain:"Кривые (Curves) — основной инструмент тоновой коррекции: управляют яркостью, контрастом и тонами по каналам. Hue/Saturation — оттенок/насыщенность, Color Balance — цветовой баланс, Gaussian Blur — размытие.",topic:"Цветокоррекция"},
+  {q:"Что такое контровое освещение объекта в сцене?",options:["Освещение объекта фронтально.","Освещение объекта сбоку.","Освещение объекта сзади.","Свечение объекта изнутри."],correct:2,explain:"Контровой свет (back light, rim light) ставится позади объекта и обрисовывает силуэт, отделяя объект от фона.",topic:"Освещение"},
+  {q:"Какой инструмент используется для создания эффекта размытия движения в Adobe After Effects?",options:["Motion Blur.","Gaussian Blur.","Conical Blur.","Lens Blur."],correct:0,explain:"Motion Blur — встроенный переключатель в AE, который имитирует естественное смазывание движущегося объекта по углу затвора (Shutter Angle).",topic:"After Effects"},
+  {q:"В анимации, а также кино- и видеопродакшене существуют основные принципы монтажа. Какой из приведенных принципов к ним НЕ относится?",options:["Подхват движения по направлению.","Перетекание настроения.","Переход по крупности.","Подхват силуэта (формы)."],correct:1,explain:"Классические принципы монтажа: по крупности, по фазе движения, по направлению, по темпу, по смещению осей, подхват силуэта. «Перетекание настроения» — не монтажный принцип.",topic:"Монтаж"},
+  {q:"Где чаще всего используется цветовая модель CMYK?",options:["В полиграфии.","В моушн-дизайне.","В шелкографии.","В 3D-дизайне."],correct:0,explain:"CMYK — субтрактивная модель (Cyan, Magenta, Yellow, Key/Black), стандарт офсетной и цифровой полиграфии.",topic:"Цвет"},
+  {q:"Что такое Z-буфер (Z pass)?",options:["Карта нормалей.","Карта глубины.","Альфа-канал.","Буферизация временных файлов."],correct:1,explain:"Z-pass (Z-depth) — карта расстояний от камеры до поверхности в каждом пикселе; используется для постовой DOF, тумана, компоузных эффектов.",topic:"Рендер"},
+  {q:"Как называется функция, которая позволяет изменять скорость анимации?",options:["Gradient displacement of timing issues.","Position, rotation, scale.","Timeless pickup.","Time remapping."],correct:3,explain:"Time Remapping (переназначение времени) в After Effects позволяет растягивать, сжимать, замораживать или реверсить таймлайн слоя.",topic:"After Effects"},
+  {q:"Что такое цикл (loop) в анимированном ролике?",options:["Продолжительный по длительности отрывок анимации.","Полностью совпадающий по началу и концу отрывок анимации.","Заключительный этап процесса создания анимации.","Объект такой формы, которая переходит сама в себя."],correct:1,explain:"Loop — анимационный фрагмент, у которого последний кадр стыкуется с первым без видимого шва, что позволяет проигрывать его бесконечно.",topic:"Анимация"},
+  {q:"Как описать полностью черный цвет в цветовой модели RGB?",options:["0 0 0.","100 100 100.","255 255 255.","1 1 1."],correct:0,explain:"RGB аддитивна: отсутствие света по всем каналам (0, 0, 0) даёт чёрный. (255, 255, 255) — белый.",topic:"Цвет"},
+  {q:"Как расшифровывается HDRI?",options:["High Density Range Image.","Half Digital Render Irradiance.","Hard Displacement Resultat Illumination.","High Dynamic Range Imaging."],correct:3,explain:"HDRI — High Dynamic Range Imaging (изображение с расширенным динамическим диапазоном); хранит яркости >1.0 и используется для IBL-освещения сцены.",topic:"Освещение / HDRI"},
+  {q:"Что такое unbiased rendering?",options:["Рендер имитирует физически корректное поведение света.","Рендер не имитирует физически корректное поведение света.","Упрощенный вариант рендера для высокой скорости просчета.","Рендер, который работает только на CPU."],correct:0,explain:"Unbiased-рендеры (например, путь tracing без shortcut'ов) считают свет по физически корректным формулам без систематического смещения: при достаточном времени сходятся к референсу.",topic:"Рендер"}
+];
+
+const form = document.getElementById('quiz-form');
+const progressText = document.getElementById('progress-text');
+const progressFill = document.getElementById('progress-fill');
+const progressPct = document.getElementById('progress-pct');
+const submitBtn = document.getElementById('submit-btn');
+const resetBtn = document.getElementById('reset-btn');
+const resultsDiv = document.getElementById('results');
+const letters = ['A','B','C','D','E'];
+let submitted = false;
+
+function renderQuiz() {
+  form.innerHTML = '';
+  questions.forEach((item, i) => {
+    const qEl = document.createElement('div');
+    qEl.className = 'question';
+    qEl.id = 'q-' + i;
+    qEl.innerHTML = `
+      <div class="q-num">Вопрос ${i + 1} · ${item.topic}</div>
+      <div class="q-text">${item.q}</div>
+      <div class="options">
+        ${item.options.map((opt, j) => `
+          <label class="option" data-idx="${j}">
+            <input type="radio" name="q${i}" value="${j}">
+            <span class="option-letter">${letters[j]}.</span>
+            <span class="option-text">${opt}</span>
+          </label>
+        `).join('')}
+      </div>
+    `;
+    form.appendChild(qEl);
+  });
+  attachListeners();
+  updateProgress();
+}
+
+function attachListeners() {
+  form.querySelectorAll('input[type="radio"]').forEach(input => {
+    input.addEventListener('change', () => {
+      if (submitted) return;
+      const labels = input.closest('.options').querySelectorAll('.option');
+      labels.forEach(l => l.classList.remove('selected'));
+      input.closest('.option').classList.add('selected');
+      updateProgress();
+    });
+  });
+}
+
+function updateProgress() {
+  const answered = form.querySelectorAll('input[type="radio"]:checked').length;
+  const pct = Math.round((answered / questions.length) * 100);
+  progressText.textContent = `${answered} / ${questions.length}`;
+  progressFill.style.width = pct + '%';
+  progressPct.textContent = pct + '%';
+}
+
+function gradeForScore(score, total) {
+  const pct = (score / total) * 100;
+  if (pct >= 90) return { cls: 'excellent', text: 'Отлично — к тесту готов!' };
+  if (pct >= 75) return { cls: 'good',      text: 'Хорошо. Повтори слабые темы.' };
+  if (pct >= 60) return { cls: 'ok',        text: 'Удовлетворительно. Нужно повторение.' };
+  return                 { cls: 'weak',      text: 'Слабо. Вернись к базе знаний.' };
+}
+
+function submitQuiz() {
+  let score = 0;
+  const topics = {};
+  questions.forEach((item, i) => {
+    if (!topics[item.topic]) topics[item.topic] = { correct: 0, total: 0 };
+    topics[item.topic].total++;
+
+    const selected = form.querySelector(`input[name="q${i}"]:checked`);
+    const userIdx = selected ? parseInt(selected.value, 10) : -1;
+    const isCorrect = userIdx === item.correct;
+    if (isCorrect) {
+      score++;
+      topics[item.topic].correct++;
+    }
+
+    const qEl = document.getElementById('q-' + i);
+    qEl.classList.add('review-q');
+    if (!isCorrect) {
+      qEl.classList.add(userIdx === -1 ? 'is-skipped' : 'is-wrong');
+    }
+    const optionEls = qEl.querySelectorAll('.option');
+    optionEls.forEach((el, j) => {
+      const input = el.querySelector('input');
+      input.disabled = true;
+      el.classList.remove('selected');
+      if (j === item.correct) el.classList.add('correct');
+      if (j === userIdx && userIdx !== item.correct) el.classList.add('wrong');
+    });
+
+    const explainEl = document.createElement('div');
+    explainEl.className = 'explain';
+    const userLabel = userIdx === -1 ? '<em>не отвечен</em>' : letters[userIdx];
+    explainEl.innerHTML = `<strong>Правильный ответ: ${letters[item.correct]}.</strong> Твой ответ: ${userLabel}.<br>${item.explain}`;
+    qEl.appendChild(explainEl);
+  });
+
+  const grade = gradeForScore(score, questions.length);
+  const topicHtml = Object.entries(topics).map(([name, t]) => {
+    const pct = Math.round((t.correct / t.total) * 100);
+    let cls = 'low';
+    if (pct >= 75) cls = 'ok';
+    else if (pct >= 50) cls = 'mid';
+    return `<div class="topic-stat"><span>${name}</span><span class="pct ${cls}">${t.correct} / ${t.total} · ${pct}%</span></div>`;
+  }).join('');
+
+  resultsDiv.innerHTML = `
+    <div class="score-label">Результат</div>
+    <div class="score">${score} / ${questions.length}</div>
+    <div class="grade ${grade.cls}">${grade.text}</div>
+    <div class="topic-stats">${topicHtml}</div>
+  `;
+  resultsDiv.classList.remove('hidden');
+  resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Тест завершён';
+  submitted = true;
+}
+
+function resetQuiz() {
+  if (submitted && !confirm('Сбросить результаты и начать заново?')) return;
+  if (!submitted) {
+    const answered = form.querySelectorAll('input[type="radio"]:checked').length;
+    if (answered > 0 && !confirm('Стереть все ответы?')) return;
+  }
+  submitted = false;
+  submitBtn.disabled = false;
+  submitBtn.textContent = 'Проверить результат';
+  resultsDiv.classList.add('hidden');
+  resultsDiv.innerHTML = '';
+  renderQuiz();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+submitBtn.addEventListener('click', () => {
+  const answered = form.querySelectorAll('input[type="radio"]:checked').length;
+  if (answered < questions.length) {
+    if (!confirm(`Отвечено ${answered} из ${questions.length}. Завершить тест?`)) return;
+  }
+  submitQuiz();
+});
+resetBtn.addEventListener('click', resetQuiz);
+
+renderQuiz();
+</script>
+</body>
+</html>
